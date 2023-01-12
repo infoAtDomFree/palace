@@ -1,8 +1,9 @@
 <html>
-<head>
-	<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
 
-	<!-- <script type="module">
+<head>
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+
+    <!-- <script type="module">
 		import * as Card from "./card.js";
         import * as Deck from "./deck.js";
 		import * as SMS from "https://cdn.jsdelivr.net/npm/@dom-free/dom-free@1/lib/esm/sms.mjs";
@@ -10,122 +11,170 @@
 		window.sms = SMS;
 	</script>     -->
     <style>
-        div{
+        div {
             border-width: 2px;
             border-style: solid;
-            border-color:black;
+            border-color: black;
         }
-        div.card {
-                border-width: 1px;
-                border-color: gray;
-                border-radius: 5%;
-                border-style: solid;
-                float:left;
-                background-color: gray;
-                margin:12px;
-                padding:0;
 
-            }
-        div.card img{
+        div.card {
+            border-width: 1px;
+            border-color: gray;
+            border-radius: 5%;
+            border-style: solid;
+            float: left;
+            background-color: gray;
+            margin: 12px;
+            
+            padding: 0;
+
+        }
+        .updown{
+            background-color: black;
+        }
+
+        div.card img {
             z-index: 1000;
             aspect-ratio: .72;
-            height: 100px;
-            
+            height: 140px;
+
         }
 
-        .deck{
+        .deck {
             position: absolute;
         }
-        .discard{
+
+        .discard {
             position: absolute;
         }
+
         .player {
             position: absolute;
         }
+
         .leftopponent {
             position: absolute;
         }
+
         .topopponent {
             position: absolute;
         }
+
         .rightopponent {
             position: absolute;
         }
     </style>
 </head>
-    <body>
-        <div class="deck"><div class="card"><img id="topOfDeck"></img></div></div>
-        <div class="discard"><div class="card"><img id="topOfDiscardPile"></img></div></div>
-        <div class="player">Player</div>
-        <div class="leftopponent">Left</div>
-        <div class="topopponent">Top</div>
-        <div class="rightopponent">Right</div>
-    </body>
-    </html>
+
+<body>
+    <div class="deck">
+        <div class="card"><img id="topOfDeck"></img></div>
+    </div>
+    <div class="discard">
+        <div class="card"><img id="topOfDiscardPile"></img></div>
+    </div>
+    <div class="player">
+        <div class="updown card"><img id="playerUpDownOne"></img></div>
+        <div class="updown card"><img id="playerpUpDownTwo"></img></div>
+        <div class="updown card"><img id="playerUpDownThree"></img></div>
+    </div>
+    <div class="leftopponent">
+        <div class="updown card"><img id="leftUpDownOne"></img></div>
+        <div class="updown card"><img id="leftUpDownTwo"></img></div>
+        <div class="updown card"><img id="leftUpDownThree"></img></div>
+    </div>
+    <div class="topopponent">
+        <div class="updown card"><img id="topUpDownOne"></img></div>
+        <div class="updown card"><img id="topUpDownTwo"></img></div>
+        <div class="updown card"><img id="topUpDownThree"></img></div>
+    </div>
+    <div class="rightopponent">
+        <div class="updown card"><img id="rightUpDownOne"></img></div>
+        <div class="updown card"><img id="rightUpDownTwo"></img></div>
+        <div class="updown card"><img id="rightUpDownThree"></img></div>
+    </div>
+</body>
+
+</html>
 <script lang="javascript">
-        $(document).ready(() => {
-            // Deck.Init(sms);
-            // for (var i = 0;i<52;i++){
-            //     const card = Card.Init(sms);
-            //     Deck.AddCard(card);
-            // }
-            // sms.Clear();
-            var calcPosition = (pos) => {
-                return pos + "px";
-            }
-            var recalcAll = () => {
-                var viewportWidth = $(window).width();
-                var viewportHeight = $(window).height(); 
-                // set aside left 20%, top 20% and right 20% for opponents
-                // set aside 30% under top for the discard and deck
-                // remainder is player's space
-                let sideMargin = viewportWidth * .2;
-                let rightStart = viewportWidth * .8;
-                let topMargin = viewportHeight * .2;   
-                let deckHeight = viewportHeight * .3;
-                let topWidth = viewportWidth - 2 * sideMargin;
+    $(document).ready(() => {
+        // Deck.Init(sms);
+        // for (var i = 0;i<52;i++){
+        //     const card = Card.Init(sms);
+        //     Deck.AddCard(card);
+        // }
+        // sms.Clear();
+        var calcPosition = (pos) => {
+            return pos + "px";
+        }
+        var recalcAll = () => {
+            var viewportWidth = $(window).width();
+            var viewportHeight = $(window).height();
+            // set aside left 20%, top 20% and right 20% for opponents
+            // set aside 30% under top for the discard and deck
+            // remainder is player's space
+            let sideMargin = viewportWidth * .2;
+            let rightStart = viewportWidth * .8;
+            let topMargin = viewportHeight * .2;
+            let deckHeight = viewportHeight * .3;
+            let topWidth = viewportWidth - 2 * sideMargin;
+            let cardHeight = (viewportHeight - 3 * topMargin)/2.5 - 2;
+            let cardWidth = cardHeight * .72;
+            let topAndPlayerStart = viewportWidth /2 - (cardWidth*3+100)/2;
 
-                $(".leftopponent")
-                   .css("top", calcPosition(topMargin+1))
-                   .css("left", "1px")
-                   .css("width", calcPosition(sideMargin-8))
-                   .css("height", calcPosition((viewportHeight-3* topMargin)-2));
+            $(".leftopponent")
+                .css("top", calcPosition(topMargin + 1))
+                .css("left", "1px")
+                .css("width", calcPosition(cardWidth + 30))
+                .css("height", calcPosition(cardHeight * 3 + 100));
 
-                $(".rightopponent")
-                   .css("top", calcPosition(topMargin+1))
-                   .css("left", calcPosition(rightStart+1))
-                   .css("width", calcPosition(sideMargin-8))
-                   .css("height", calcPosition((viewportHeight-3* topMargin)-2));
+            $(".rightopponent")
+                .css("top", calcPosition(topMargin + 1))
+                .css("left", calcPosition(rightStart + 1))
+                .css("width", calcPosition(cardWidth + 30))
+                .css("height", calcPosition(cardHeight * 3 + 100));
 
-                $(".topopponent")
-                   .css("top", "1px")
-                   .css("left", calcPosition(sideMargin+1))
-                   .css("width", calcPosition(topWidth-8))
-                   .css("height", calcPosition(topMargin-6 ));  
+            $(".topopponent")
+                .css("top", "1px")
+                .css("left", calcPosition(topAndPlayerStart))
+                .css("width", calcPosition(cardWidth*3+100))
+                .css("height", calcPosition(cardHeight +33));
 
-                $(".player")
-                   .css("top", calcPosition((viewportHeight- 2*topMargin)+4))
-                   .css("left", calcPosition(sideMargin+1) )
-                   .css("width", calcPosition(topWidth-8))
-                   .css("height", calcPosition((topMargin*2)-23));  
+            $(".player")
+                .css("top", calcPosition((viewportHeight - 2 * topMargin) + 4))
+                .css("left", calcPosition(topAndPlayerStart))
+                .css("width", calcPosition(cardWidth*3+100))
+                .css("height", calcPosition(cardHeight +33));
 
-                $(".deck")
-                    .css("top", calcPosition(topMargin*1.5+1))
-                    .css("left", calcPosition(sideMargin*1.5+8))
-                    .css("width", calcPosition(sideMargin/2-8))
-                    .css("height", calcPosition(topMargin/2-2));
-                                 
+            $(".deck")
+                .css("top", calcPosition(topMargin * 1.5 + 1))
+                .css("left", calcPosition(topAndPlayerStart+33))
+                .css("width", calcPosition(cardWidth + 25))
+                .css("height", calcPosition(cardHeight + 25));
 
-                $(".discard")
-                    .css("top", calcPosition(topMargin*1.5+1))
-                    .css("left", calcPosition(sideMargin*2.5+8))
-                    .css("width", calcPosition(sideMargin/2-8))
-                    .css("height", calcPosition(topMargin/2-2));
-                                 
-            };
-            $(window).resize(function() {
-                recalcAll();
+
+            $(".discard")
+                .css("top", calcPosition(topMargin * 1.5 + 1))
+                .css("left", calcPosition(topAndPlayerStart + cardWidth * 1.5 + 100))
+                .css("width", calcPosition(cardWidth + 25))
+                .css("height", calcPosition(cardHeight + 25));
+
+            $("div.card img").css("height", calcPosition(cardHeight))
+
+            $("img").each(element => {
+                let r = Math.round(Math.random()*52, 0);
+                let file = "images/" + r + ".svg";
+                let el = $("img")[element];
+                let id = el.id;
+
+                $( "#" + id ).attr("src", file);
+                
             });
+
+        };
+        $(window).resize(function () {
             recalcAll();
-        })
+        });
+        recalcAll();
+    })
 </script>
